@@ -44,7 +44,6 @@ This method accepts the options in a hash:
 
     By default, all content types are allowed. Use +:image+ to allow all
     standard image types.
-    
 
 [:min_size]
     Minimum file size.
