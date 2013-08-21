@@ -296,7 +296,14 @@ module Technoweenie # :nodoc:
 
       # Gets the thumbnail name for a filename.  'foo.jpg' becomes 'foo_thumbnail.jpg'
       def thumbnail_name_for(thumbnail = nil)
-        return filename if thumbnail.blank?
+        if thumbnail.blank?
+          if filename.nil?
+            return ''
+          else
+            return filename
+          end
+        end
+
         ext = nil
         basename = filename.gsub /\.\w+$/ do |s|
           ext = s; ''

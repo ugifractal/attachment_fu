@@ -1,3 +1,9 @@
+* Aug 21, 2013 *
+* Added S3 :encrypted_storage option support from cschulte22
+
+* Jul 5, 2013
+* Pull in changes from lchimonji10 to reformat README to RDoc format
+
 * Apr 10, 2013 *
 * Ruby 2 compatibility fix
 * Removed some lingering occurrences of RAILS_ROOT and RAILS_ENV

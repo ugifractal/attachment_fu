@@ -183,7 +183,7 @@ module Technoweenie # :nodoc:
           end
 
           begin
-            @@s3_config_path = base.attachment_options[:s3_config_path] || (Rails.root.to_s + '/config/amazon_s3.yml')
+            @@s3_config_path = base.attachment_options[:s3_config_path] || File.join(Rails.root, 'config', 'amazon_s3.yml')
             @@s3_config = @@s3_config = YAML.load(ERB.new(File.read(@@s3_config_path)).result)[Rails.env].symbolize_keys
           #rescue
           #  raise ConfigFileNotFoundError.new('File %s not found' % @@s3_config_path)
@@ -333,7 +333,11 @@ module Technoweenie # :nodoc:
         end
 
         def current_data
-          S3Object.value full_filename, bucket_name
+          if attachment_options[:encrypted_storage] && self.respond_to?(:encryption_key) && self.encryption_key != nil
+            EncryptedData.decrypt_data(S3Object.value(full_filename, bucket_name), self.encryption_key)
+          else
+            S3Object.value full_filename, bucket_name
+          end
         end
 
         def s3_protocol
@@ -376,13 +380,25 @@ module Technoweenie # :nodoc:
 
           def save_to_storage
             if save_attachment?
-              S3Object.store(
-                full_filename,
-                (temp_path ? File.open(temp_path) : temp_data),
-                bucket_name,
-                :content_type => content_type,
-                :access => attachment_options[:s3_access]
-              )
+              if attachment_options[:encrypted_storage]
+                S3Object.store(
+                               full_filename,
+                               (temp_path ? File.open(temp_path) : temp_data),
+                               bucket_name,
+                               :content_type => content_type,
+                               :access => attachment_options[:s3_access],
+                               'x-amz-server-side-encryption' => 'AES256',
+                               'Content-Disposition' => "attachment; filename=\"#{filename}\""
+                               )
+              else
+                S3Object.store(
+                               full_filename,
+                               (temp_path ? File.open(temp_path) : temp_data),
+                               bucket_name,
+                               :content_type => content_type,
+                               :access => attachment_options[:s3_access]
+                               )
+              end
             end
 
             @old_filename = nil
