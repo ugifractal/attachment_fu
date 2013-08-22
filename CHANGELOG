@@ -1,3 +1,6 @@
+* Aug 22, 2013 *
+* Added cache-control header option and Ruby 1.9 fix for S3 from tricycle
+
 * Aug 21, 2013 *
 * Added S3 :encrypted_storage option support from cschulte22
 

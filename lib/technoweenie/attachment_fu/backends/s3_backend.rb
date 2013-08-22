@@ -291,9 +291,9 @@ module Technoweenie # :nodoc:
 
         def public_filename(*args)
           if attachment_options[:cloudfront]
-            cloudfront_url(args)
+            cloudfront_url(*args)
           else
-            s3_url(args)
+            s3_url(*args)
           end
         end
 
@@ -386,6 +386,7 @@ module Technoweenie # :nodoc:
                                (temp_path ? File.open(temp_path) : temp_data),
                                bucket_name,
                                :content_type => content_type,
+                               :cache_control => attachment_options[:cache_control],
                                :access => attachment_options[:s3_access],
                                'x-amz-server-side-encryption' => 'AES256',
                                'Content-Disposition' => "attachment; filename=\"#{filename}\""
@@ -396,6 +397,7 @@ module Technoweenie # :nodoc:
                                (temp_path ? File.open(temp_path) : temp_data),
                                bucket_name,
                                :content_type => content_type,
+                               :cache_control => attachment_options[:cache_control],
                                :access => attachment_options[:s3_access]
                                )
               end
