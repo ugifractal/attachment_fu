@@ -1,6 +1,11 @@
+.rvmrc
 tmp/restart.txt
 .DS_Store
 *~
 *.gem
 # vim swap files
 *.swp
+#config
+log
+tmp
+vendor/plugins

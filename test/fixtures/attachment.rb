@@ -9,7 +9,7 @@ class Attachment < ActiveRecord::Base
 end
 
 class LowerQualityAttachment < Attachment
-  set_table_name 'attachments'
+  self.table_name = 'attachments'
   has_attachment :resize_to => [55,55], :jpeg_quality => 50
 end
 
@@ -59,7 +59,6 @@ class ImageWithPolymorphicThumbsAttachment < Attachment
     :editorials => { :fullsize => '150x100>' },
     'User'      => { :avatar => '64x64!' }
   }
->>>>>>> 33222f02ee9657d0ea9e4654b06cea7ed49cb85b
 end
 
 class FileAttachment < ActiveRecord::Base
@@ -68,7 +67,7 @@ class FileAttachment < ActiveRecord::Base
 end
 
 class FileAttachmentWithStringId < ActiveRecord::Base
-  set_table_name 'file_attachments_with_string_id'
+  self.table_name = 'file_attachments_with_string_id'
   has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files', :processor => :rmagick
   validates_as_attachment
 
@@ -84,7 +83,7 @@ class FileAttachmentWithStringId < ActiveRecord::Base
 end
 
 class FileAttachmentWithUuid < ActiveRecord::Base
-  set_table_name 'file_attachments_with_string_id'
+  self.table_name = 'file_attachments_with_string_id'
   has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files', :processor => :rmagick, :uuid_primary_key => true
   validates_as_attachment
 
@@ -107,15 +106,9 @@ end
 class ImageWithThumbsFileAttachment < FileAttachment
   has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
     :thumbnails => { :thumb => [50, 50], :geometry => 'x50' }, :resize_to => [55,55]
-<<<<<<< HEAD
-  def after_resize(img)
-    self.aspect_ratio = img.columns.to_f / img.rows.to_f
-  end
-=======
   # after_resize do |record, img|
   #   record.aspect_ratio = img.columns.to_f / img.rows.to_f
   # end
->>>>>>> 33222f02ee9657d0ea9e4654b06cea7ed49cb85b
 end
 
 class ImageWithThumbsClassFileAttachment < FileAttachment
@@ -152,7 +145,7 @@ begin
   end
 
   class ImageScienceLowerQualityAttachment < ActiveRecord::Base
-    set_table_name 'image_science_attachments'
+    self.table_name = 'image_science_attachments'
     has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
       :processor => :image_science, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55,
       :jpeg_quality => 75
@@ -234,7 +227,7 @@ begin
   end
 
   class LowerQualityMiniMagickAttachment < ActiveRecord::Base
-    set_table_name 'mini_magick_attachments'
+    self.table_name = 'mini_magick_attachments'
     has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
       :processor => :mini_magick, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55,
       :jpeg_quality => 50
