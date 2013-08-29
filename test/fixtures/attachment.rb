@@ -62,13 +62,13 @@ class ImageWithPolymorphicThumbsAttachment < Attachment
 end
 
 class FileAttachment < ActiveRecord::Base
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files', :processor => :rmagick
+  has_attachment :path_prefix => 'tmp/attachment_fu', :processor => :rmagick
   validates_as_attachment
 end
 
 class FileAttachmentWithStringId < ActiveRecord::Base
   self.table_name = 'file_attachments_with_string_id'
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files', :processor => :rmagick
+  has_attachment :path_prefix => 'tmp/attachment_fu', :processor => :rmagick
   validates_as_attachment
 
   before_validation :auto_generate_id
@@ -84,7 +84,7 @@ end
 
 class FileAttachmentWithUuid < ActiveRecord::Base
   self.table_name = 'file_attachments_with_string_id'
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files', :processor => :rmagick, :uuid_primary_key => true
+  has_attachment :path_prefix => 'tmp/attachment_fu', :processor => :rmagick, :uuid_primary_key => true
   validates_as_attachment
 
   before_validation :auto_generate_id
@@ -99,12 +99,12 @@ class FileAttachmentWithUuid < ActiveRecord::Base
 end
 
 class ImageFileAttachment < FileAttachment
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+  has_attachment :path_prefix => 'tmp/attachment_fu',
     :content_type => :image, :resize_to => [50,50]
 end
 
 class ImageWithThumbsFileAttachment < FileAttachment
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+  has_attachment :path_prefix => 'tmp/attachment_fu',
     :thumbnails => { :thumb => [50, 50], :geometry => 'x50' }, :resize_to => [55,55]
   # after_resize do |record, img|
   #   record.aspect_ratio = img.columns.to_f / img.rows.to_f
@@ -113,13 +113,13 @@ end
 
 class ImageWithThumbsClassFileAttachment < FileAttachment
   # use file_system_path to test backwards compatibility
-  has_attachment :file_system_path => 'vendor/plugins/attachment_fu/test/files',
+  has_attachment :file_system_path => 'tmp/attachment_fu',
     :thumbnails => { :thumb => [50, 50] }, :resize_to => [55,55],
     :thumbnail_class => 'ImageThumbnail'
 end
 
 class ImageThumbnail < FileAttachment
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files/thumbnails'
+  has_attachment :path_prefix => 'tmp/attachment_fu/thumbnails'
 end
 
 # no parent
@@ -130,7 +130,7 @@ end
 
 # no filename, no size, no content_type
 class MinimalAttachment < ActiveRecord::Base
-  has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files', :processor => :rmagick
+  has_attachment :path_prefix => 'tmp/attachment_fu', :processor => :rmagick
   validates_as_attachment
 
   def filename
@@ -140,19 +140,19 @@ end
 
 begin
   class ImageScienceAttachment < ActiveRecord::Base
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :image_science, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55
   end
 
   class ImageScienceLowerQualityAttachment < ActiveRecord::Base
     self.table_name = 'image_science_attachments'
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :image_science, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55,
       :jpeg_quality => 75
   end
 
   class ImageScienceWithPerThumbJpegAttachment < ImageScienceAttachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :image_science,
       :resize_to => '100x100',
       :thumbnails => { :thumb => [50, 50], :editorial => '300x120', :avatar => '64x64!' },
@@ -165,18 +165,18 @@ end
 
 begin
   class CoreImageAttachment < ActiveRecord::Base
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :core_image, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55
   end
 
   class LowerQualityCoreImageAttachment < CoreImageAttachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :core_image, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55,
       :jpeg_quality => 50
   end
 
   class CoreImageWithPerThumbJpegAttachment < CoreImageAttachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :core_image,
       :resize_to => '100x100',
       :thumbnails => { :thumb => [50, 50], :editorial => '300x120', :avatar => '64x64!' },
@@ -189,12 +189,12 @@ end
 
 begin
   class MiniMagickAttachment < ActiveRecord::Base
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :mini_magick, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55
   end
 
   class ImageThumbnailCrop < MiniMagickAttachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
     :thumbnails => { :square => "50x50c", :vertical => "30x60c", :horizontal => "60x30c"}
 
     # TODO this is a bad duplication, this method is in the MiniMagick Processor
@@ -228,13 +228,13 @@ begin
 
   class LowerQualityMiniMagickAttachment < ActiveRecord::Base
     self.table_name = 'mini_magick_attachments'
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :mini_magick, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55,
       :jpeg_quality => 50
   end
 
   class MiniMagickWithPerThumbJpegAttachment < MiniMagickAttachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :mini_magick,
       :resize_to => '100x100',
       :thumbnails => { :thumb => [50, 50], :editorial => '300x120', :avatar => '64x64!' },
@@ -248,18 +248,18 @@ end
 
 begin
   class GD2Attachment < ActiveRecord::Base
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :gd2, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55
   end
 
   class LowerQualityGD2Attachment < GD2Attachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :gd2, :thumbnails => { :thumb => [50, 51], :geometry => '31>', :aspect => '25x25!' }, :resize_to => 55,
       :jpeg_quality => 50
   end
 
   class GD2WithPerThumbJpegAttachment < GD2Attachment
-    has_attachment :path_prefix => 'vendor/plugins/attachment_fu/test/files',
+    has_attachment :path_prefix => 'tmp/attachment_fu',
       :processor => :gd2,
       :resize_to => '100x100',
       :thumbnails => { :thumb => [50, 50], :editorial => '300x120', :avatar => '64x64!' },
