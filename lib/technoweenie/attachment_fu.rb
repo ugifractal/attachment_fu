@@ -325,7 +325,7 @@ module Technoweenie # :nodoc:
             :filename                 => thumbnail_name_for(file_name_suffix),
             :thumbnail_resize_options => size
           }
-          if defined?(Rails) && Rails::VERSION::MAJOR >= 3
+          if defined?(Rails) && Rails::VERSION::MAJOR == 3
             # assign_attributes API in Rails 2.3 doesn't take a second argument
             assign_attributes_args << { :without_protection => true }
           end
@@ -475,9 +475,15 @@ module Technoweenie # :nodoc:
 
         # Initializes a new thumbnail with the given suffix.
         def find_or_initialize_thumbnail(file_name_suffix)
-          respond_to?(:parent_id) ?
-            thumbnail_class.find_or_initialize_by_thumbnail_and_parent_id(file_name_suffix.to_s, id) :
-            thumbnail_class.find_or_initialize_by_thumbnail(file_name_suffix.to_s)
+          if defined?(Rails) && Rails::VERSION::MAJOR >= 4
+            respond_to?(:parent_id) ?
+              thumbnail_class.find_or_initialize_by(:thumbnail => file_name_suffix.to_s, :parent_id => id) :
+              thumbnail_class.find_or_initialize_by(:thumbnail => file_name_suffix.to_s)
+		  else
+            respond_to?(:parent_id) ?
+              thumbnail_class.find_or_initialize_by_thumbnail_and_parent_id(file_name_suffix.to_s, id) :
+              thumbnail_class.find_or_initialize_by_thumbnail(file_name_suffix.to_s)
+          end
         end
 
         # Stub for a #process_attachment method in a processor
