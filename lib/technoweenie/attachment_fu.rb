@@ -483,6 +483,7 @@ module Technoweenie # :nodoc:
             respond_to?(:parent_id) ?
               thumbnail_class.find_or_initialize_by_thumbnail_and_parent_id(file_name_suffix.to_s, id) :
               thumbnail_class.find_or_initialize_by_thumbnail(file_name_suffix.to_s)
+          end
         end
 
         # Stub for a #process_attachment method in a processor
