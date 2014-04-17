@@ -325,7 +325,7 @@ module Technoweenie # :nodoc:
             :filename                 => thumbnail_name_for(file_name_suffix),
             :thumbnail_resize_options => size
           }
-          if defined?(Rails) && Rails::VERSION::MAJOR >= 3
+          if defined?(Rails) && Rails::VERSION::MAJOR == 3
             # assign_attributes API in Rails 2.3 doesn't take a second argument
             assign_attributes_args << { :without_protection => true }
           end
