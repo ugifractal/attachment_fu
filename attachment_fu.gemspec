@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.description		  = %q{This is a fork of Rick Olson's attachment_fu adding Ruby 1.9 and Rails 3.2 support as well as some other enhancements.}
   s.email			  = %q{steven@pothoven.net}
   s.homepage		  = %q{http://github.com/pothoven/attachment_fu}
-  s.version			  = "3.2.11"
-  s.date			  = %q{2014-01-07}
+  s.version			  = "3.2.12"
+  s.date			  = %q{2014-04-17}
 
   s.files			  = Dir.glob("{lib,vendor}/**/*") + %w( CHANGELOG LICENSE README.rdoc amazon_s3.yml.tpl rackspace_cloudfiles.yml.tpl )
   s.extra_rdoc_files  = ["README.rdoc"]
