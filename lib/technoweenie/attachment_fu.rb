@@ -433,6 +433,11 @@ module Technoweenie # :nodoc:
       #   end
       #
       def with_image(&block)
+        # Write out the temporary data if it is not present
+        if temp_data.nil?
+          self.temp_data = current_data
+        end 
+        
         self.class.with_image(temp_path, &block)
       end
 
