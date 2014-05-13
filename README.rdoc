@@ -1,11 +1,11 @@
-{<img src="https://badge.fury.io/rb/pothoven-attachment_fu.svg" alt="Gem Version" />}[http://badge.fury.io/rb/pothoven-attachment_fu]
-
 = attachment-fu
+
+{<img src="https://badge.fury.io/rb/pothoven-attachment_fu.svg" alt="Gem Version" />}[http://badge.fury.io/rb/pothoven-attachment_fu]
 
 attachment_fu is a plugin by Rick Olson (aka technoweenie
 http://techno-weenie.net) and is the successor to acts_as_attachment. To get a
 basic run-through of its capabilities, check out {Mike Clark's
-tutorial}[http://clarkware.com/cgi/blosxom/2007/02/24#FileUploadFu].
+tutorial}[https://github.com/pothoven/attachment_fu/blob/master/TUTORIAL.rdoc].
 
 = attachment_fu functionality
 
