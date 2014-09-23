@@ -1,3 +1,6 @@
+* Sep 23, 2014 *
+* Pull in changes from corlissc to Refactor DbFileBackend for Rails 4 AREL conformity *
+
 * May 13, 2014 *
 * Pull in changes from bacrossland to fix thumbnails for S3 storage
 
