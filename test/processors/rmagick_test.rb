@@ -147,7 +147,6 @@ class RmagickTest < Test::Unit::TestCase
     
     # same as above method, but test it on a file model
     test_against_class :test_should_automatically_create_thumbnails, ImageWithThumbsFileAttachment
-    test_against_subclass :test_should_automatically_create_thumbnails_on_class, ImageWithThumbsFileAttachment
     
     def test_should_use_thumbnail_subclass(klass = ImageWithThumbsClassFileAttachment)
       attachment_model klass
@@ -177,17 +176,15 @@ class RmagickTest < Test::Unit::TestCase
       end
     
       old_filenames = [attachment.full_filename] + attachment.thumbnails.collect(&:full_filename)
-    
-      assert_not_created do
-        use_temp_file "files/rails.png" do |file|
-          attachment.filename        = 'rails2.png'
-          attachment.temp_paths.unshift File.join(FIXTURE_PATH, file)
-          attachment.save
-          new_filenames = [attachment.reload.full_filename] + attachment.thumbnails.collect { |t| t.reload.full_filename }
-          new_filenames.each { |f| assert  File.exists?(f), "#{f} does not exist" }
-          old_filenames.each { |f| assert !File.exists?(f), "#{f} still exists" }
-        end
+
+      use_temp_file 'files/rails.jpg' do |file|
+        attachment.uploaded_data = fixture_file_upload(file,'image/jpeg')
+        attachment.save
       end
+
+      new_filenames = [attachment.reload.full_filename] + attachment.thumbnails.collect { |t| t.reload.full_filename }
+      new_filenames.each { |f| assert  File.exists?(f), "#{f} does not exist" }
+      old_filenames.each { |f| assert !File.exists?(f), "#{f} still exists" }
     end
     
     test_against_subclass :test_should_remove_old_thumbnail_files_when_updating, ImageWithThumbsFileAttachment

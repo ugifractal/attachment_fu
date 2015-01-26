@@ -51,14 +51,25 @@ class ImageWithPerThumbJpegAttachment < Attachment
 end
 
 class ImageWithPolymorphicThumbsAttachment < Attachment
+  cattr_accessor :thumbnail_creations
+
   belongs_to :imageable, :polymorphic => true
+
   has_attachment :thumbnails => {
     :thumb      => [50, 50],
     :geometry   => 'x50',
     :products   => { :large_thumb => '169x169!', :zoomed => '500x500>' },
     :editorials => { :fullsize => '150x100>' },
     'User'      => { :avatar => '64x64!' }
-  }
+  }, :processor => :rmagick
+
+  def create_or_update_thumbnail(path, thumb, *size)
+    @@thumbnail_creations[thumb] = size.size == 1 ? size.first : size
+  end
+
+  def self.reset_creations
+    @@thumbnail_creations = {}
+  end
 end
 
 class FileAttachment < ActiveRecord::Base
@@ -67,7 +78,8 @@ class FileAttachment < ActiveRecord::Base
 end
 
 class FileAttachmentWithStringId < ActiveRecord::Base
-  self.table_name = 'file_attachments_with_string_id'
+  self.table_name = 'file_attachments_with_string_ids'
+  self.primary_key= :id
   has_attachment :path_prefix => 'tmp/attachment_fu', :processor => :rmagick
   validates_as_attachment
 
@@ -82,8 +94,7 @@ class FileAttachmentWithStringId < ActiveRecord::Base
     end
 end
 
-class FileAttachmentWithUuid < ActiveRecord::Base
-  self.table_name = 'file_attachments_with_string_id'
+class FileAttachmentWithUuid < FileAttachmentWithStringId
   has_attachment :path_prefix => 'tmp/attachment_fu', :processor => :rmagick, :uuid_primary_key => true
   validates_as_attachment
 
@@ -277,13 +288,18 @@ begin
     validates_as_attachment
   end
 
-  class CloudFilesAttachment < ActiveRecord::Base
-    has_attachment :storage => :cloud_files, :processor => :rmagick, :cloudfiles_config_path => File.join(File.dirname(__FILE__), '../rackspace_cloudfiles.yml')
+  class S3WithPathPrefixAttachment < S3Attachment
+    has_attachment :storage => :s3, :path_prefix => 'some/custom/path/prefix', :processor => :rmagick
     validates_as_attachment
   end
 
-  class S3WithPathPrefixAttachment < S3Attachment
-    has_attachment :storage => :s3, :path_prefix => 'some/custom/path/prefix', :processor => :rmagick
+rescue
+  puts "S3 error: #{$!}"
+end
+
+begin
+  class CloudFilesAttachment < ActiveRecord::Base
+    has_attachment :storage => :cloud_files, :processor => :rmagick, :cloudfiles_config_path => File.join(File.dirname(__FILE__), '../rackspace_cloudfiles.yml')
     validates_as_attachment
   end
 
@@ -293,5 +309,5 @@ begin
   end
 
 rescue
-  puts "S3 error: #{$!}"
+  puts "CloudFiles error: #{$!}"
 end
