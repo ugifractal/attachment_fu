@@ -62,6 +62,6 @@ class OrphanAttachmentTest < Test::Unit::TestCase
   end
 end
 
-class MinimalAttachmentTest < OrphanAttachmentTest
-  attachment_model MinimalAttachment
-end
+#class MinimalAttachmentTest < OrphanAttachmentTest
+#  attachment_model MinimalAttachment
+#end
