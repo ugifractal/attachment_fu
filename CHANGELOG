@@ -1,3 +1,6 @@
+* Jan 27, 2015 *
+* Pull in changes from bacrossland to fix test suite *
+
 * Sep 23, 2014 *
 * Pull in changes from corlissc to Refactor DbFileBackend for Rails 4 AREL conformity *
 
