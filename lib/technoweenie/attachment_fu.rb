@@ -446,7 +446,7 @@ module Technoweenie # :nodoc:
         def random_tempfile_filename
           base_filename = filename ? filename.gsub(/\.\w+$/, '') : 'attachment'
           ext = filename ? filename.slice(/\.\w+$/) : ''
-          ["#{rand Time.now.to_i}#{base_filename}", ext]
+          ["#{rand Time.now.to_i}#{base_filename}", ext || '']
         end
 
         def sanitize_filename(filename)
