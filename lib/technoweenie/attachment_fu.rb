@@ -445,7 +445,7 @@ module Technoweenie # :nodoc:
         # Generates a unique filename for a Tempfile.
         def random_tempfile_filename
           base_filename = filename ? filename.gsub(/\.\w+$/, '') : 'attachment'
-          ext = filename.slice(/\.\w+$/)
+          ext = filename ? filename.slice(/\.\w+$/) : ''
           ["#{rand Time.now.to_i}#{base_filename}", ext || '']
         end
 
