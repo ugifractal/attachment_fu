@@ -319,17 +319,12 @@ module Technoweenie # :nodoc:
         thumbnailable? || raise(ThumbnailError.new("Can't create a thumbnail if the content type is not an image or there is no parent_id column"))
         find_or_initialize_thumbnail(file_name_suffix).tap do |thumb|
           thumb.temp_paths.unshift temp_file
-          assign_attributes_args = []
-          assign_attributes_args << {
-            :content_type             => content_type,
-            :filename                 => thumbnail_name_for(file_name_suffix),
-            :thumbnail_resize_options => size
+          attributes = {
+            content_type:             content_type,
+            filename:                 thumbnail_name_for(file_name_suffix),
+            thumbnail_resize_options: size
           }
-          if defined?(Rails) && Rails::VERSION::MAJOR == 3
-            # assign_attributes API in Rails 2.3 doesn't take a second argument
-            assign_attributes_args << { :without_protection => true }
-          end
-          thumb.send(:assign_attributes, *assign_attributes_args)
+          attributes.each{ |a, v| thumb.send "#{a}=", v }
           callback_with_args :before_thumbnail_saved, thumb
           thumb.save!
         end
@@ -436,8 +431,8 @@ module Technoweenie # :nodoc:
         # Write out the temporary data if it is not present
         if temp_data.nil?
           self.temp_data = current_data
-        end 
-        
+        end
+
         self.class.with_image(temp_path, &block)
       end
 
@@ -480,15 +475,14 @@ module Technoweenie # :nodoc:
 
         # Initializes a new thumbnail with the given suffix.
         def find_or_initialize_thumbnail(file_name_suffix)
-          if defined?(Rails) && Rails::VERSION::MAJOR >= 4
-            respond_to?(:parent_id) ?
-              thumbnail_class.find_or_initialize_by(:thumbnail => file_name_suffix.to_s, :parent_id => id) :
-              thumbnail_class.find_or_initialize_by(:thumbnail => file_name_suffix.to_s)
-		  else
-            respond_to?(:parent_id) ?
-              thumbnail_class.find_or_initialize_by_thumbnail_and_parent_id(file_name_suffix.to_s, id) :
-              thumbnail_class.find_or_initialize_by_thumbnail(file_name_suffix.to_s)
+          attrs = {thumbnail: file_name_suffix.to_s}
+          attrs[:parent_id] = id if respond_to? :parent_id
+          thumb = thumbnail_class.where(attrs).first
+          unless thumb
+            thumb = thumbnail_class.new
+            attrs.each{ |a, v| thumb[a] = v }
           end
+          thumb
         end
 
         # Stub for a #process_attachment method in a processor
