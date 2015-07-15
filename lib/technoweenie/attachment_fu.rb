@@ -320,9 +320,9 @@ module Technoweenie # :nodoc:
         find_or_initialize_thumbnail(file_name_suffix).tap do |thumb|
           thumb.temp_paths.unshift temp_file
           attributes = {
-            content_type:             content_type,
-            filename:                 thumbnail_name_for(file_name_suffix),
-            thumbnail_resize_options: size
+            :content_type =>             content_type,
+            :filename =>                 thumbnail_name_for(file_name_suffix),
+            :thumbnail_resize_options => size
           }
           attributes.each{ |a, v| thumb.send "#{a}=", v }
           callback_with_args :before_thumbnail_saved, thumb
