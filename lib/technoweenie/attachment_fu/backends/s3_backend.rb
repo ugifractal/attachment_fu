@@ -367,13 +367,23 @@ module Technoweenie # :nodoc:
             return unless @old_filename && @old_filename != filename
 
             old_full_filename = File.join(base_path, @old_filename)
-
-            S3Object.rename(
-              old_full_filename,
-              full_filename,
-              bucket_name,
-              :access => attachment_options[:s3_access]
-            )
+            if (S3Object.exists?(old_full_filename,bucket_name))
+              S3Object.rename(
+                old_full_filename,
+                full_filename,
+                bucket_name,
+                :access => attachment_options[:s3_access]
+              )
+            else
+              S3Object.store(
+                               full_filename,
+                               (temp_path ? File.open(temp_path) : temp_data),
+                               bucket_name,
+                               :content_type => content_type,
+                               :cache_control => attachment_options[:cache_control],
+                               :access => attachment_options[:s3_access]
+                               )
+            end
 
             @old_filename = nil
             true
