@@ -176,10 +176,10 @@ module Technoweenie # :nodoc:
           mattr_reader :bucket_name, :s3_config
 
           begin
-            require 'aws/s3'
-            include AWS::S3
+            require 'xaws/s3'
+            include XAWS::S3
           rescue LoadError
-            raise RequiredLibraryNotFoundError.new('AWS::S3 could not be loaded')
+            raise RequiredLibraryNotFoundError.new('XAWS::S3 could not be loaded')
           end
 
           begin
@@ -367,23 +367,13 @@ module Technoweenie # :nodoc:
             return unless @old_filename && @old_filename != filename
 
             old_full_filename = File.join(base_path, @old_filename)
-            if (S3Object.exists?(old_full_filename,bucket_name))
-              S3Object.rename(
-                old_full_filename,
-                full_filename,
-                bucket_name,
-                :access => attachment_options[:s3_access]
-              )
-            else
-              S3Object.store(
-                               full_filename,
-                               (temp_path ? File.open(temp_path) : temp_data),
-                               bucket_name,
-                               :content_type => content_type,
-                               :cache_control => attachment_options[:cache_control],
-                               :access => attachment_options[:s3_access]
-                               )
-            end
+
+            S3Object.rename(
+              old_full_filename,
+              full_filename,
+              bucket_name,
+              :access => attachment_options[:s3_access]
+            )
 
             @old_filename = nil
             true
