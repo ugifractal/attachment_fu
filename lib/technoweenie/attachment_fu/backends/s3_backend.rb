@@ -367,7 +367,9 @@ module Technoweenie # :nodoc:
             return unless @old_filename && @old_filename != filename
 
             old_full_filename = File.join(base_path, @old_filename)
-
+            if !S3Object.exists?(old_full_filename, bucket_name)
+              return save_to_storage
+            end
             S3Object.rename(
               old_full_filename,
               full_filename,
