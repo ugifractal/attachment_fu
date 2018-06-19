@@ -144,7 +144,7 @@ module Technoweenie # :nodoc:
             if processors.any?
               attachment_options[:processor] = processors.first
               processor_mod = ::Technoweenie::AttachmentFu::Processors.const_get("#{attachment_options[:processor].to_s.classify}Processor")
-              include processor_mod unless included_modules.include?(processor_mod)
+              #include processor_mod unless included_modules.include?(processor_mod)
             end
           rescue Object, Exception
             raise unless load_related_exception?($!)
