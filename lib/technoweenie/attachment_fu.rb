@@ -133,7 +133,6 @@ module Technoweenie # :nodoc:
           m.has_many   :thumbnails, :class_name => "::#{attachment_options[:thumbnail_class]}"
           m.belongs_to :parent, :class_name => "::#{base_class}" unless options[:thumbnails].empty?
         end
-
         storage_mod = ::Technoweenie::AttachmentFu::Backends.const_get("#{options[:storage].to_s.classify}Backend")
         include storage_mod unless included_modules.include?(storage_mod)
 
@@ -144,7 +143,7 @@ module Technoweenie # :nodoc:
             if processors.any?
               attachment_options[:processor] = processors.first
               processor_mod = ::Technoweenie::AttachmentFu::Processors.const_get("#{attachment_options[:processor].to_s.classify}Processor")
-              #include processor_mod unless included_modules.include?(processor_mod)
+              include processor_mod unless included_modules.include?(processor_mod)
             end
           rescue Object, Exception
             raise unless load_related_exception?($!)
@@ -155,6 +154,7 @@ module Technoweenie # :nodoc:
         else
           begin
             processor_mod = ::Technoweenie::AttachmentFu::Processors.const_get("#{attachment_options[:processor].to_s.classify}Processor")
+
             include processor_mod unless included_modules.include?(processor_mod)
           rescue Object, Exception
             raise unless load_related_exception?($!)
@@ -326,7 +326,7 @@ module Technoweenie # :nodoc:
           }
           attributes.each{ |a, v| thumb.send "#{a}=", v }
           callback_with_args :before_thumbnail_saved, thumb
-          thumb.save!
+          thumb.save!(:validate => false)
         end
       end
 
@@ -487,13 +487,15 @@ module Technoweenie # :nodoc:
 
         # Stub for a #process_attachment method in a processor
         def process_attachment
+          puts "------------ ORIGINAL Process -----------"
           @saved_attachment = save_attachment?
         end
 
         # Cleans up after processing.  Thumbnails are created, the attachment is stored to the backend, and the temp_paths are cleared.
         def after_process_attachment
           if @saved_attachment
-            if respond_to?(:process_attachment_with_processing, true) && thumbnailable? && !attachment_options[:thumbnails].blank? && parent_id.nil?
+            if respond_to?(:process_attachment, true) && thumbnailable? && !attachment_options[:thumbnails].blank? && parent_id.nil?
+
               temp_file = temp_path || create_temp_file
               attachment_options[:thumbnails].each { |suffix, size|
                 if size.is_a?(Symbol)

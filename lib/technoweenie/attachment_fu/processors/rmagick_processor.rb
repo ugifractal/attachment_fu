@@ -5,7 +5,8 @@ module Technoweenie # :nodoc:
       module RmagickProcessor
         def self.included(base)
           base.send :extend, ClassMethods
-          base.alias_method_chain :process_attachment, :processing
+          #base.alias_method_chain :process_attachment, :processing
+          base.send(:prepend, ExtraProcessing)
         end
 
         module ClassMethods
@@ -23,6 +24,19 @@ module Technoweenie # :nodoc:
             block.call binary_data if block && binary_data
           ensure
             !binary_data.nil?
+          end
+        end
+
+        module ExtraProcessing
+          def process_attachment
+            puts "============================="
+            with_image do |img|
+              resize_image_or_thumbnail! img
+              self.width  = img.columns if respond_to?(:width)
+              self.height = img.rows    if respond_to?(:height)
+              callback_with_args :after_resize, img
+            end if image?
+            super
           end
         end
 
